@@ -17,7 +17,7 @@ st.set_page_config(
 # Custom Styling for Hackathon Aesthetic
 st.markdown("""
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght=300;400;600;700&display=swap');
     html, body, [data-testid="stAppViewContainer"] {
         font-family: 'Inter', sans-serif;
         background-color: #FAFCFF;
@@ -40,8 +40,11 @@ st.markdown("""
         box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
         border: 1px solid #E2E8F0;
     }
+    .status-high { color: #EF4444; font-weight: 700; }
+    .status-low { color: #3B82F6; font-weight: 700; }
+    .status-normal { color: #10B981; font-weight: 700; }
 </style>
-""", unsafe_with_html=True)
+""", unsafe_allow_html=True)  # <-- FIXED HERE
 
 # Application Header
 st.markdown('<div class="main-title">🩸 Abhi\'s Blood Report Analyzer</div>', unsafe_with_html=True)
