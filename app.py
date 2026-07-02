@@ -15,10 +15,10 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# FIXED: High-Contrast CSS Styling to prevent "Invisible Text" bugs in Dark/Light mode overrides
+# High-Contrast CSS Styling to prevent "Invisible Text" bugs in Dark/Light mode overrides
 st.markdown("""
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght=300;400;600;700&display=swap');
     
     /* Force a unified clean background and high-visibility dark text */
     html, body, [data-testid="stAppViewContainer"], [data-testid="stHeader"] {
@@ -215,7 +215,7 @@ if st.session_state.report_data:
     with c1:
         st.markdown(f'<div class="metric-card"><h5>Markers Screened</h5><h2>{total_tracked}</h2><p style="color:#2563EB; font-size:12px;">Total blood panels found</p></div>', unsafe_allow_html=True)
     with c2:
-        st.markdown(f'<div class="metric-card"><h5>Attention Alerts 🚨</h5><h2>{total_anomalies}</h2><p style="color:#DC2626; font-size:12px; font-weight:700;">{high_flags} High | {low_flags} Low</p></div>', unsafe_with_html=True)
+        st.markdown(f'<div class="metric-card"><h5>Attention Alerts 🚨</h5><h2>{total_anomalies}</h2><p style="color:#DC2626; font-size:12px; font-weight:700;">{high_flags} High | {low_flags} Low</p></div>', unsafe_allow_html=True) # <-- FIXED HERE (Line 218)
     with c3:
         st.markdown(f'<div class="metric-card"><h5>Health Index Score</h5><h2>{health_score}/100</h2><p style="color:#475569; font-size:12px;">Algorithmic safety rating</p></div>', unsafe_allow_html=True)
     with c4:
@@ -227,7 +227,6 @@ if st.session_state.report_data:
     with tab1:
         st.subheader("Detailed Lab Diagnostics Panel")
         
-        # FIXED: Higher contrast row styling with bold text for ultra-clear visibility inside tables
         def style_rows(row):
             if row['status'] == 'High':
                 return ['background-color: rgba(239, 68, 68, 0.18); color: #991B1B; font-weight: 700;'] * len(row)
@@ -238,53 +237,4 @@ if st.session_state.report_data:
         styled_df = df.style.apply(style_rows, axis=1)
         st.dataframe(styled_df, use_container_width=True, hide_index=True)
         
-        if st.button("Reset Dashboard / Upload New Report"):
-            st.session_state.report_data = None
-            st.rerun()
-
-    with tab2:
-        if enable_history:
-            st.subheader("Continuous Historical Predictive Modeling")
-            st.caption("Simulated analysis displaying current biomarkers contrasted against trailing metrics.")
-            flagged_only = df[df['status'].isin(['High', 'Low'])]
-            display_items = flagged_only if not flagged_only.empty else df
-            
-            t_cols = st.columns(min(3, len(display_items)))
-            for idx, (_, row) in enumerate(display_items.head(3).iterrows()):
-                with t_cols[idx % 3]:
-                    fig = create_trend_chart(row['biomarker'], float(row['value']), float(row['reference_min']), float(row['reference_max']))
-                    st.plotly_chart(fig, use_container_width=True)
-
-    with tab3:
-        st.subheader("AI-Driven Personal Care Orchestrator")
-        col_coach, col_doc = st.columns(2)
-        
-        with col_coach:
-            if enable_coach and total_anomalies > 0:
-                st.markdown("#### 🥗 Personalized Nutritional & Lifestyle Playbook")
-                for _, row in df[df['status'].isin(['High', 'Low'])].iterrows():
-                    with st.expander(f"Optimization Routine for abnormal {row['biomarker']}", expanded=True):
-                        if "Sugar" in row['biomarker'] or "Glucose" in row['biomarker']:
-                            st.markdown("**Diet:** Transition to low GI complex carbohydrates.")
-                            st.markdown("**Exercise:** Incorporate 25-minute postprandial zone-2 cardio sessions.")
-                        elif "Vitamin D" in row['biomarker']:
-                            st.markdown("**Diet:** Pair fat-soluble D3-rich sources with lipids.")
-                            st.markdown("**Routine:** 10-20 minutes solar indexing before 11:00 AM daily.")
-                        elif "Cholesterol" in row['biomarker'] or "Lipid" in row['biomarker']:
-                            st.markdown("**Diet:** Target >35g daily soluble fibers.")
-                        elif "Hemoglobin" in row['biomarker']:
-                            st.markdown("**Diet:** Maximize bioavailable heme-iron sources.")
-            else:
-                st.success("🎉 All biomarkers are optimized within clinical parameters.")
-                
-        with col_doc:
-            if enable_doc_prep and total_anomalies > 0:
-                st.markdown("#### 🩺 Doctor Appointment Prep Toolkit")
-                questions = []
-                for _, row in df[df['status'].isin(['High', 'Low'])].iterrows():
-                    questions.append(f"Given that my {row['biomarker']} is flagged as **{row['status']}** at {row['value']} {row['unit']}, what step should we take next?")
-                for idx, q in enumerate(questions[:4]):
-                    st.markdown(f"> **Q{idx+1}:** {q}")
-
-st.markdown("---")
-st.markdown("<p style='text-align: center; color: #475569; font-size: 12px; font-weight: 500;'>Abhi's Blood Report Analyzer Pro — Prototype Engine built for hackathon judging. Disclaimer: Not a substitute for verified clinical diagnostic workflows.</p>", unsafe_allow_html=True)
+        if st.button("Reset Dashboard / Upload
