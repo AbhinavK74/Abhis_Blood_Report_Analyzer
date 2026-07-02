@@ -93,8 +93,13 @@ with st.sidebar:
     st.image("https://cdn-icons-png.flaticon.com/512/2864/2864264.png", width=80)
     st.title("Settings & APIs")
     
-    api_key = st.text_input("Google Gemini API Key", type="password", placeholder="AIzaSy...")
-    st.caption("🔒 Keys are processed securely locally and never stored.")
+    # Securely auto-load the API key if saved in Streamlit Secrets
+    if "GEMINI_API_KEY" in st.secrets and st.secrets["GEMINI_API_KEY"]:
+        api_key = st.secrets["GEMINI_API_KEY"]
+        st.success("🔒 API Key securely auto-loaded!")
+    else:
+        api_key = st.text_input("Google Gemini API Key", type="password", placeholder="AIzaSy...")
+        st.caption("🔑 Key missing? Paste your Gemini API key here to unlock live features.")
     
     st.markdown("---")
     st.subheader("🚀 Presentation Toggles")
