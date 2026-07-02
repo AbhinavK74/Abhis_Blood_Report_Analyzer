@@ -15,35 +15,72 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Custom Styling for Hackathon Aesthetic
+# FIXED: High-Contrast CSS Styling to prevent "Invisible Text" bugs in Dark/Light mode overrides
 st.markdown("""
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght=300;400;600;700&display=swap');
-    html, body, [data-testid="stAppViewContainer"] {
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+    
+    /* Force a unified clean background and high-visibility dark text */
+    html, body, [data-testid="stAppViewContainer"], [data-testid="stHeader"] {
         font-family: 'Inter', sans-serif;
-        background-color: #FAFCFF;
+        background-color: #FFFFFF !important;
+        color: #0F172A !important;
     }
+    
+    /* Ensure sidebar text and background contrast cleanly */
+    [data-testid="stSidebar"] {
+        background-color: #F8FAFC !important;
+        border-right: 1px solid #E2E8F0;
+    }
+    
+    /* Headings visibility overrides */
     .main-title {
         font-size: 38px;
         font-weight: 800;
-        color: #1E293B;
+        color: #0F172A !important;
         margin-bottom: 5px;
     }
     .subtitle {
         font-size: 16px;
-        color: #64748B;
+        color: #475569 !important;
         margin-bottom: 25px;
     }
+    
+    /* Custom Metric Display Cards styling */
     .metric-card {
-        background-color: white;
-        padding: 20px;
+        background-color: #F1F5F9 !important;
+        padding: 22px;
         border-radius: 12px;
         box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
-        border: 1px solid #E2E8F0;
+        border: 2px solid #E2E8F0 !important;
     }
-    .status-high { color: #EF4444; font-weight: 700; }
-    .status-low { color: #3B82F6; font-weight: 700; }
-    .status-normal { color: #10B981; font-weight: 700; }
+    .metric-card h5 {
+        color: #475569 !important;
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 6px;
+    }
+    .metric-card h2 {
+        color: #0F172A !important;
+        font-size: 32px;
+        font-weight: 800;
+        margin: 0 0 4px 0;
+    }
+    .metric-card p {
+        margin: 0;
+        font-weight: 500;
+    }
+
+    /* Force global markdown paragraphs, text areas, labels to be solid dark slate */
+    .stMarkdown p, .stMarkdown li, stp, label, .stSlider s {
+        color: #1E293B !important;
+    }
+    
+    /* Style tab labels for contrast */
+    button[data-baseweb="tab"] p {
+        color: #475569 !important;
+        font-weight: 600 !important;
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -123,8 +160,8 @@ def create_trend_chart(biomarker, current_val, r_min, r_max):
     h_values = [current_val * 1.08, current_val * 0.93, current_val * 1.02, current_val]
     
     fig = go.Figure()
-    fig.add_hrect(y0=r_min, y1=r_max, line_width=0, fillcolor="rgba(16, 185, 129, 0.12)", annotation_text="Optimal Range", annotation_position="top left")
-    fig.add_trace(go.Scatter(x=timeline, y=h_values, mode='lines+markers', name=biomarker, line=dict(color='#3B82F6', width=3), marker=dict(size=8)))
+    fig.add_hrect(y0=r_min, y1=r_max, line_width=0, fillcolor="rgba(16, 185, 129, 0.15)", annotation_text="Optimal Range", annotation_position="top left")
+    fig.add_trace(go.Scatter(x=timeline, y=h_values, mode='lines+markers', name=biomarker, line=dict(color='#2563EB', width=3), marker=dict(size=8)))
     
     fig.update_layout(
         title=f"Chronological Trend Graph: {biomarker}",
@@ -132,7 +169,7 @@ def create_trend_chart(biomarker, current_val, r_min, r_max):
         yaxis_title="Value",
         height=260,
         margin=dict(l=10, r=10, t=40, b=10),
-        plot_bgcolor="white",
+        plot_bgcolor="#F8FAFC",
         paper_bgcolor="white"
     )
     return fig
@@ -173,15 +210,16 @@ if st.session_state.report_data:
     total_anomalies = high_flags + low_flags
     health_score = int(max(10, 100 - (total_anomalies * 18)))
     
+    # Executive Visual Statistics Matrix
     c1, c2, c3, c4 = st.columns(4)
     with c1:
-        st.markdown(f'<div class="metric-card"><h5>Markers Screened</h5><h2>{total_tracked}</h2><p style="color:gray; font-size:12px;">Total blood panels found</p></div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="metric-card"><h5>Markers Screened</h5><h2>{total_tracked}</h2><p style="color:#2563EB; font-size:12px;">Total blood panels found</p></div>', unsafe_allow_html=True)
     with c2:
-        st.markdown(f'<div class="metric-card"><h5>Attention Alerts 🚨</h5><h2>{total_anomalies}</h2><p style="color:#EF4444; font-size:12px;">{high_flags} High | {low_flags} Low</p></div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="metric-card"><h5>Attention Alerts 🚨</h5><h2>{total_anomalies}</h2><p style="color:#DC2626; font-size:12px; font-weight:700;">{high_flags} High | {low_flags} Low</p></div>', unsafe_with_html=True)
     with c3:
-        st.markdown(f'<div class="metric-card"><h5>Health Index Score</h5><h2>{health_score}/100</h2><p style="color:gray; font-size:12px;">Algorithmic safety rating</p></div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="metric-card"><h5>Health Index Score</h5><h2>{health_score}/100</h2><p style="color:#475569; font-size:12px;">Algorithmic safety rating</p></div>', unsafe_allow_html=True)
     with c4:
-        st.markdown(f'<div class="metric-card"><h5>Analysis Latency</h5><h2>&lt; 8 Secs</h2><p style="color:#10B981; font-size:12px;">92% faster than SLAs</p></div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="metric-card"><h5>Analysis Latency</h5><h2>&lt; 8 Secs</h2><p style="color:#16A34A; font-size:12px; font-weight:700;">92% faster than medical SLAs</p></div>', unsafe_allow_html=True)
         
     st.markdown("---")
     tab1, tab2, tab3 = st.tabs(["📊 Interactive Metrics Table", "📈 Micro-Trend Engine", "🧠 Smart Health Interventions"])
@@ -189,12 +227,13 @@ if st.session_state.report_data:
     with tab1:
         st.subheader("Detailed Lab Diagnostics Panel")
         
+        # FIXED: Higher contrast row styling with bold text for ultra-clear visibility inside tables
         def style_rows(row):
             if row['status'] == 'High':
-                return ['background-color: rgba(239, 68, 68, 0.12); color: #B91C1C;'] * len(row)
+                return ['background-color: rgba(239, 68, 68, 0.18); color: #991B1B; font-weight: 700;'] * len(row)
             elif row['status'] == 'Low':
-                return ['background-color: rgba(59, 130, 246, 0.12); color: #1D4ED8;'] * len(row)
-            return ['background-color: rgba(16, 185, 129, 0.08); color: #065F46;'] * len(row)
+                return ['background-color: rgba(59, 130, 246, 0.18); color: #1E40AF; font-weight: 700;'] * len(row)
+            return ['background-color: rgba(16, 185, 129, 0.12); color: #065F46; font-weight: 600;'] * len(row)
 
         styled_df = df.style.apply(style_rows, axis=1)
         st.dataframe(styled_df, use_container_width=True, hide_index=True)
@@ -248,4 +287,4 @@ if st.session_state.report_data:
                     st.markdown(f"> **Q{idx+1}:** {q}")
 
 st.markdown("---")
-st.markdown("<p style='text-align: center; color: #94A3B8; font-size: 12px;'>Abhi's Blood Report Analyzer Pro — Prototype Engine built for hackathon judging. Disclaimer: Not a substitute for verified clinical diagnostic workflows.</p>", unsafe_allow_html=True)
+st.markdown("<p style='text-align: center; color: #475569; font-size: 12px; font-weight: 500;'>Abhi's Blood Report Analyzer Pro — Prototype Engine built for hackathon judging. Disclaimer: Not a substitute for verified clinical diagnostic workflows.</p>", unsafe_allow_html=True)
