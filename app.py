@@ -2,6 +2,7 @@ import streamlit as st
 import google.generativeai as genai
 import pandas as pd
 import plotly.graph_objects as go
+import plotly.express as px
 from PIL import Image
 import json
 import re
@@ -44,11 +45,11 @@ st.markdown("""
     .status-low { color: #3B82F6; font-weight: 700; }
     .status-normal { color: #10B981; font-weight: 700; }
 </style>
-""", unsafe_allow_html=True)  # <-- FIXED HERE
+""", unsafe_allow_html=True)
 
 # Application Header
-st.markdown('<div class="main-title">🩸 Abhi\'s Blood Report Analyzer</div>', unsafe_with_html=True)
-st.markdown('<div class="subtitle">Next-Gen Multi-Agent Medical Report Parsing, Criticality Scoring, and Personal Health Insights.</div>', unsafe_with_html=True)
+st.markdown('<div class="main-title">🩸 Abhi\'s Blood Report Analyzer</div>', unsafe_allow_html=True)
+st.markdown('<div class="subtitle">Next-Gen Multi-Agent Medical Report Parsing, Criticality Scoring, and Personal Health Insights.</div>', unsafe_allow_html=True)
 
 # Sidebar Configuration
 with st.sidebar:
@@ -174,13 +175,13 @@ if st.session_state.report_data:
     
     c1, c2, c3, c4 = st.columns(4)
     with c1:
-        st.markdown(f'<div class="metric-card"><h5>Markers Screened</h5><h2>{total_tracked}</h2><p style="color:gray; font-size:12px;">Total blood panels found</p></div>', unsafe_with_html=True)
+        st.markdown(f'<div class="metric-card"><h5>Markers Screened</h5><h2>{total_tracked}</h2><p style="color:gray; font-size:12px;">Total blood panels found</p></div>', unsafe_allow_html=True)
     with c2:
-        st.markdown(f'<div class="metric-card"><h5>Attention Alerts 🚨</h5><h2>{total_anomalies}</h2><p style="color:#EF4444; font-size:12px;">{high_flags} High | {low_flags} Low</p></div>', unsafe_with_html=True)
+        st.markdown(f'<div class="metric-card"><h5>Attention Alerts 🚨</h5><h2>{total_anomalies}</h2><p style="color:#EF4444; font-size:12px;">{high_flags} High | {low_flags} Low</p></div>', unsafe_allow_html=True)
     with c3:
-        st.markdown(f'<div class="metric-card"><h5>Health Index Score</h5><h2>{health_score}/100</h2><p style="color:gray; font-size:12px;">Algorithmic safety rating</p></div>', unsafe_with_html=True)
+        st.markdown(f'<div class="metric-card"><h5>Health Index Score</h5><h2>{health_score}/100</h2><p style="color:gray; font-size:12px;">Algorithmic safety rating</p></div>', unsafe_allow_html=True)
     with c4:
-        st.markdown(f'<div class="metric-card"><h5>Analysis Latency</h5><h2>&lt; 8 Secs</h2><p style="color:#10B981; font-size:12px;">92% faster than SLAs</p></div>', unsafe_with_html=True)
+        st.markdown(f'<div class="metric-card"><h5>Analysis Latency</h5><h2>&lt; 8 Secs</h2><p style="color:#10B981; font-size:12px;">92% faster than SLAs</p></div>', unsafe_allow_html=True)
         
     st.markdown("---")
     tab1, tab2, tab3 = st.tabs(["📊 Interactive Metrics Table", "📈 Micro-Trend Engine", "🧠 Smart Health Interventions"])
@@ -247,4 +248,4 @@ if st.session_state.report_data:
                     st.markdown(f"> **Q{idx+1}:** {q}")
 
 st.markdown("---")
-st.markdown("<p style='text-align: center; color: #94A3B8; font-size: 12px;'>Abhi's Blood Report Analyzer Pro — Prototype Engine built for hackathon judging.</p>", unsafe_with_html=True)
+st.markdown("<p style='text-align: center; color: #94A3B8; font-size: 12px;'>Abhi's Blood Report Analyzer Pro — Prototype Engine built for hackathon judging. Disclaimer: Not a substitute for verified clinical diagnostic workflows.</p>", unsafe_allow_html=True)
